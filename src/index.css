@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #202020;
+  --panel: #2a2a2a;
+  --panel2: #343434;
+  --sidebar: #191919;
+  --text: #f4f4f4;
+  --muted: #b8b8b8;
+  --accent: #5aa83b;
+  --launcher-green: #16833b;
+  --launcher-green-hover: #199747;
+  --border: rgba(255, 255, 255, 0.11);
+}
+
+body.light {
+  --bg: #e4e8ec;
+  --panel: #f3f5f7;
+  --panel2: #e1e5e9;
+  --sidebar: #d5dbe1;
+  --text: #20262c;
+  --muted: #56616b;
+  --accent: #489b2b;
+  --launcher-green: #198c3e;
+  --launcher-green-hover: #1ca449;
+  --border: rgba(0, 0, 0, 0.12);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.15);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* Pixel art character styling */
+.pixel-person {
+  position: relative;
+  width: 80px;
+  height: 164px;
+  image-rendering: pixelated;
+}
+.pixel-head {
+  position: absolute;
+  top: 0;
+  left: 18px;
+  width: 44px;
+  height: 44px;
+  background: #d5ac80;
+  border: 4px solid #23201e;
+  box-shadow: inset 0 12px #553c2c;
+}
+.pixel-body {
+  position: absolute;
+  top: 42px;
+  left: 13px;
+  width: 54px;
+  height: 64px;
+  background: #36a3a9;
+  border: 4px solid #23201e;
+}
+.pixel-leg {
+  position: absolute;
+  top: 104px;
+  left: 15px;
+  width: 22px;
+  height: 50px;
+  background: #3d546d;
+  border: 4px solid #23201e;
+  box-shadow: 30px 0 #3d546d, 30px 0 0 4px #23201e;
+}
+.pixel-arm {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  width: 15px;
+  height: 60px;
+  background: #d5ac80;
+  border: 3px solid #23201e;
+  box-shadow: 65px 0 #d5ac80, 65px 0 0 3px #23201e;
+}
+
+/* Grass block graphics */
+.grass-block-icon {
+  position: relative;
+  background: #79512d;
+  border: 2px solid #10130f;
+  box-shadow: inset 0 0 0 2px #8d6841;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.grass-block-icon::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 32%;
+  background: repeating-linear-gradient(90deg, #70b84a 0 6px, #5b9f38 6px 12px);
+  border-bottom: 2px solid #3c752c;
+}
+.grass-block-icon::after {
+  content: "";
+  position: absolute;
+  top: 45%;
+  left: 20%;
+  width: 18%;
+  height: 25%;
+  background: #b9854f;
+  box-shadow: 12px 6px #a97642;
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Minecraft Launcher — Browser Edition",
+  "description": "Authentic web Minecraft Launcher to launch browser clients (Eaglercraft, GX Launcher), manage custom installation profiles, inject EaglerForge mods, and explore patch notes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
