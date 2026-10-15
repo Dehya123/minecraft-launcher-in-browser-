@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080d12">
+<title>Eaglercraft 26.3 — The Sift Bridge</title>
+<style>
+:root{color-scheme:dark;--bg:#080d12;--panel:#101a22;--line:#35525b;--cyan:#71f0dc;--muted:#a4bac1;--gold:#f8d984}
+*{box-sizing:border-box}
+html,body{height:100%;width:100%;margin:0;overflow:hidden;background:var(--bg);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#f1fafb}
+button,a{font:inherit}
+#mcFrame{position:fixed;inset:0;width:100%;height:100%;border:0;background:#080d12}
+.bridge{position:fixed;z-index:30;left:14px;bottom:14px;display:flex;align-items:center;gap:10px;max-width:calc(100vw - 28px);padding:9px 10px 9px 13px;background:rgba(8,17,23,.91);border:1px solid rgba(113,240,220,.38);border-radius:13px;box-shadow:0 9px 32px #0009;backdrop-filter:blur(10px);pointer-events:auto}
+.statusdot{width:8px;height:8px;border-radius:99px;background:#65e1a8;box-shadow:0 0 12px #65e1a8;flex:none}
+.status{min-width:0;line-height:1.15}.status strong{display:block;font-size:11px;letter-spacing:.12em}.status small{display:block;margin-top:4px;color:var(--muted);font-size:10px;white-space:nowrap}
+#riftBtn{border:1px solid #5bb8b3;background:linear-gradient(130deg,#16464b,#173039);color:#e9fffc;border-radius:9px;padding:11px 14px;font-weight:800;font-size:11px;letter-spacing:.07em;white-space:nowrap;cursor:pointer;box-shadow:inset 0 1px #ffffff14;transition:filter .16s,transform .16s}
+#riftBtn:hover{filter:brightness(1.25);transform:translateY(-1px)}#riftBtn:focus-visible,#returnBtn:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+#riftBtn .glyph{color:var(--cyan);font-size:15px;margin-right:5px;vertical-align:-1px}
+#siftLayer{position:fixed;z-index:20;inset:0;background:#070b10;display:none;opacity:0;transition:opacity .22s}
+#siftLayer.open{display:block;opacity:1}
+#siftFrame{position:absolute;inset:0;width:100%;height:100%;border:0;background:#080d12}
+#returnBtn{position:absolute;z-index:24;right:14px;bottom:14px;border:1px solid rgba(113,240,220,.65);border-radius:10px;color:#f1fffd;background:rgba(7,17,23,.93);padding:11px 13px;font-weight:800;font-size:11px;letter-spacing:.03em;cursor:pointer;box-shadow:0 6px 22px #0008}
+#returnBtn:hover{background:#16363b}
+#riftFlash{position:fixed;z-index:50;inset:0;display:none;place-items:center;pointer-events:none;background:radial-gradient(circle,#8cfff8aa 0,#68e4dd44 19%,#06101600 67%);opacity:0}
+#riftFlash.go{display:grid;animation:rift .9s ease-out forwards}
+.flash-core{width:min(21vw,210px);aspect-ratio:1;border:4px solid #b7fff6;border-radius:50%;box-shadow:0 0 22px #7fffe7,0 0 55px #40bcb1,inset 0 0 24px #4bddd0;background:repeating-radial-gradient(ellipse at 48% 48%,#87fff544 0 4px,#0d303a55 6px 12px);animation:spin 1s linear infinite}
+@keyframes rift{0%{opacity:0}20%{opacity:1}70%{opacity:.85}100%{opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:560px){.bridge{left:8px;right:8px;bottom:8px;justify-content:space-between;gap:7px;padding:8px}.status strong{font-size:9px}.status small{font-size:9px}#riftBtn{font-size:10px;padding:10px 9px}#returnBtn{right:8px;bottom:78px;padding:10px;font-size:10px}.flash-core{width:42vw}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<!-- This is an add-on page. It intentionally leaves the existing Eaglercraft index.html untouched. -->
+<iframe id="mcFrame" src="./index.html" title="Eaglercraft 26.3" allow="fullscreen; autoplay; gamepad; clipboard-read; clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+<div class="bridge" id="bridgeDock" role="region" aria-label="The Sift browser bridge">
+  <span class="statusdot" aria-hidden="true"></span>
+  <div class="status"><strong>EAGLERCRAFT 26.3</strong><small>Rift bridge · browser edition</small></div>
+  <button id="riftBtn" type="button" title="Switch to The Sift browser dimension"><span class="glyph">◉</span> OPEN THE SIFT</button>
+</div>
+<div id="siftLayer" aria-hidden="true">
+  <iframe id="siftFrame" title="The Sift browser dimension" allow="autoplay; fullscreen; gamepad" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  <button id="returnBtn" type="button" title="Return to Eaglercraft">↶ RETURN TO MINECRAFT</button>
+</div>
+<div id="riftFlash" aria-hidden="true"><div class="flash-core"></div></div>
+<script>
+(() => {
+  'use strict';
+  const mcFrame = document.getElementById('mcFrame');
+  const bridgeDock = document.getElementById('bridgeDock');
+  const riftBtn = document.getElementById('riftBtn');
+  const siftLayer = document.getElementById('siftLayer');
+  const siftFrame = document.getElementById('siftFrame');
+  const returnBtn = document.getElementById('returnBtn');
+  const riftFlash = document.getElementById('riftFlash');
+  let opened = false;
+  let hasLoadedSift = false;
+  let flashTimer = 0;
+
+  function showSift() {
+    if (opened) return;
+    opened = true;
+    bridgeDock.style.display = 'none';
+    siftLayer.style.display = 'block';
+    siftLayer.setAttribute('aria-hidden', 'false');
+    // Let the transition render after display switches from none.
+    requestAnimationFrame(() => siftLayer.classList.add('open'));
+    if (!hasLoadedSift) {
+      siftFrame.src = new URL('./the-sift.html', window.location.href).href;
+      hasLoadedSift = true;
+    }
+    riftFlash.classList.remove('go');
+    void riftFlash.offsetWidth;
+    riftFlash.classList.add('go');
+    clearTimeout(flashTimer);
+    flashTimer = setTimeout(() => { riftFlash.classList.remove('go'); }, 1000);
+  }
+
+  function returnToMinecraft() {
+    if (!opened) return;
+    opened = false;
+    siftLayer.classList.remove('open');
+    siftLayer.setAttribute('aria-hidden', 'true');
+    // Keep the Sift iframe loaded so a return trip retains the current run in memory.
+    setTimeout(() => {
+      if (!opened) siftLayer.style.display = 'none';
+    }, 240);
+    bridgeDock.style.display = 'flex';
+  }
+
+  riftBtn.addEventListener('click', showSift);
+  returnBtn.addEventListener('click', returnToMinecraft);
+
+  // the-sift.html sends this message from its built-in “Exit to Launcher” control.
+  window.addEventListener('message', event => {
+    if (event.source !== siftFrame.contentWindow) return;
+    if (event.data && event.data.type === 'sift-exit') returnToMinecraft();
+  });
+
+  // Escape works when focus is on the wrapper page. The Sift's own exit control also works
+  // when its iframe owns keyboard focus.
+  window.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && opened) returnToMinecraft();
+  });
+
+  // If the current page is loaded with #sift, open the dimension directly.
+  if (window.location.hash === '#sift') showSift();
+})();
+</script>
+</body>
+</html>
